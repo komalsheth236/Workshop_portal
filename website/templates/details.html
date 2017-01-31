@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block head %}
+{{instance.title}}
+{% endblock %}
+
+{% block content %}
+
+<li><a href = '{% url "website:table" %}'> Home</a></li>
+{% if user and not user.is_anonymous %}
+<li><a href="{% url 'website:table' %}">{{ user.get_full_name|default:user.username }}</a>
+<li><a href="{% url 'auth:logout' %}?next=/table">Logout</a></li>
+{% else %}       
+<li><a href="{% url 'website:user_login' %}" >Login to book a slot</a></li>
+{% endif %}
+
+<h3> {{instance.title}}</h3></br>
+
+<!-- <div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Workshop Title</h3>
+  </div>
+  <div class="panel-body">
+{{instance.title}}
+  </div>
+</div> -->
+<div class="panel panel-default">
+  <div class="col-sm-6">
+  <div class="panel-heading">About  Workshop </div>
+  <div class="panel-body">
+    {{instance.about}}
+  </div>
+</div>
+
+
+  <div class="panel-heading">Workshop Duration</div>
+  <div class="panel-body">
+    {{instance.duration}} Day
+  </div>
+</div>
+
+
+<div class="panel panel-default">
+  <div class="panel-heading">Insructions for Coordinators</div>
+  <div class="panel-body">
+    {{ instance.instruct_coord|linebreaks }}
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">Instructions for Participant</div>
+  <div class="panel-body">
+  	{% autoescape off %}
+    {{ instance.instruct_part|linebreaks }}
+    {% endautoescape %}
+  </div>
+</div>
+
+{% if instance.schedule %}
+<a class="btn  btn-lg btn-primary" href ='{{instance.schedule.url}}' target = '_blank' >View Schedule</a>
+{% endif %}
+</br>
+
+  
+</br></br></br>
+ {% if user.is_superuser  %}
+<a href = '{% url "website:edit_workshop" instance.id %}'> Edit Workshop </a>
+{% elif user and not user.is_superuser %}
+<a href = '{% url "website:book_slot" instance.id %}'> Book a Slot</a>
+{% endif%}
+</br></br>
+{% endblock %}

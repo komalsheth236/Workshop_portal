@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block content %}
+<li><a href = '{% url "website:table" %}'> Home</a></li>
+{% if user and not user.is_anonymous %}
+<li><a href="{% url 'website:table' %}">{{ user.get_full_name|default:user.username }}</a>
+<li><a href="{% url 'auth:logout' %}?next=/table">Logout</a></li>
+{% else %}       
+<li><a href="{% url 'website:user_login' %}" >Login to book a slot</a></li>
+{% endif %}
+<h3>Slots Available for {{instance.title}}</h3>
+
+<form method ='POST' action = ""> {% csrf_token %}
+
+<table id = "myTable" >
+
+	<colgroup>
+        <col width="5%" />
+        <col width="10%" />
+        <col width="10%" />
+    </colgroup>
+	<th> Select</th>
+    <th> Date </th>
+    <th> Conductor </th>
+	{% for slot in slots %}
+	<tr>
+		<td> <input type = "radio" name="book_slot" value = {{slot.id}}></input></td>
+		<td>{{slot.dates}} </td>
+		<td>{{slot.user}} </td>
+	</tr>
+{% endfor %}
+</table>
+
+{% for field in form %} 
+                  
+                  <p>{{ field.label}}
+                   {% if field.field.required %} <span style="color:red;">*</span> {% endif %}
+                    {{ field }}</p>
+                     <a style="color:red; ">{{ field.errors }}</a>
+                  {% endfor %}
+<input type="submit" id="book" value="Book" name="book"/>
+</form>
+{% if user_slot %}
+Your request to book is sent to admin.
+{% endif %}
+
+{% endblock %}

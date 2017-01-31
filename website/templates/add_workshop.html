@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block head %}
+Add Workshop
+{% endblock %}
+ 
+{% block content %}
+{% if user and not user.is_anonymous %}
+<li><a href = '{% url "website:table" %}'> Home</a></li>
+<li><a href="{% url 'website:table' %}">{{ user.get_full_name|default:user.username }}</a>
+<li><a href="{% url 'auth:logout' %}?next=/table">Logout</a></li>
+{% else %}       
+<li><a href="{% url 'website:user_login' %}" >Login</a></li>
+{% endif %}
+<h1>Add Workshop</h1>
+</br>
+<form method ='POST' action = "" enctype = "multipart/form-data"> {% csrf_token %}
+
+{% for field in form %} 
+                 
+                  <p>{{ field.label}}
+                   {% if field.field.required %} <span style="color:red;">*</span> {% endif %}
+                    {{ field }}</p>
+                     <a style="color:red; ">{{ field.errors }}</a>
+                  {% endfor %}
+<input type = 'submit' value = "Add Workshop"></input>
+
+</form>
+</br>
+{% endblock %}

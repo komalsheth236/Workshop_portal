@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+
+{% block content %}
+
+<!-- superuser can add workshops -->
+{% if user.is_superuser %}
+<a href = '{% url "website:add_workshop" %}'> Add Workshop </a>
+{% endif %}
+
+<!-- to log in fot other users -->
+<li><a href = '{% url "website:table" %}'> Home</a></li>
+{% if user and not user.is_anonymous %}
+<li><a href="{% url 'website:table' %}">{{ user.get_full_name|default:user.username }}</a>
+<li><a href="{% url 'auth:logout' %}?next=/table">Logout</a></li>
+{% else %}       
+<li><a href="{% url 'website:user_login' %}" >Login</a></li>
+{% endif %}
+
+<!-- <div class='col-sm-6 col-sm-offset-3'> -->
+    <h1>Workshops</h1>
+<div class="row">
+{% for w in ws %}
+
+  <div class="col-sm-6">
+    <div class="thumbnail">
+     {% for t in w.tag %}
+      <!-- <span class="label label-default">{{t}}</span> -->
+      <!-- <span class="label label-primary">{{t}}</span> -->
+	  <!-- <span class="label label-success">{{t}}</span> -->
+	  <!-- <span class="label label-info">{{t}}</span> -->
+	  <!-- <span class="label label-warning">{{t}}</span> -->
+	  <span class="label label-danger">{{t}}</span>
+      {% endfor %}
+      <div class="caption">
+        <h3><a href='{% url "website:details" w.id %}'>{{ w.title|truncatechars:20 }}</a> <small>{{ w.date_modified|timesince }} ago</small></h3>
+        {{w.about}}. This is the 'about' line.
+         <!-- <p align="right"><span class="badge">Interested 14</span></p> -->
+        {% if user.is_superuser  %}
+        <p><a href='{% url "website:delete" w.id %}' class="btn btn-primary" role="button">Delete</a></p>
+        <a href = '{% url "website:slots" w.id %}'> Add a slot</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% cycle "" "</div> <div class = 'row'>" %}
+  {% endfor %}
+</div>
+
+
+
+
+{% endblock content %}

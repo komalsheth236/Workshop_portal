@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block head %}
+Edit Workshop 
+{% endblock %}
+{{instance.title}}
+
+{% block content %}
+<li><a href = '{% url "website:table" %}'> Home</a></li>
+{% if user and not user.is_anonymous %}
+<li><a href="{% url 'website:table' %}">{{ user.get_full_name|default:user.username }}</a>
+<li><a href="{% url 'auth:logout' %}?next=/table">Logout</a></li>
+{% else %}       
+<li><a href="{% url 'website:user_login' %}" >Login</a></li>
+{% endif %}
+<h1> Edit Workshop {{instance.title}}</h1>
+<form method ='POST' action = ""> {% csrf_token %}
+
+{{form.as_p}}
+<input type = 'submit' value = "Save Workshop"></input>
+
+</form>
+{% endblock %}
